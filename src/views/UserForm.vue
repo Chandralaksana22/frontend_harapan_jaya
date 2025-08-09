@@ -5,8 +5,9 @@ import { useForm, useField } from 'vee-validate'
 import * as yup from 'yup'
 import { onMounted, ref } from 'vue'
 import axios from 'axios'
-
-
+import Hero from '@/components/Hero.vue'
+import { useToast } from "vue-toastification";
+const toast = useToast();
 const userStore = useUserStore()
 const router = useRouter()
 const route = useRoute()
@@ -28,7 +29,6 @@ const { value: phone } = useField<string>('phone')
 const { value: email } = useField<string>('email')
 const { value: city } = useField<string>('city')
 
-// Ambil data kota
 async function fetchCities() {
     try {
         const res = await axios.post(
@@ -41,7 +41,7 @@ async function fetchCities() {
     }
 }
 
-// Preload data untuk edit
+
 onMounted(() => {
     fetchCities()
     if (route.params.id) {
@@ -56,7 +56,7 @@ onMounted(() => {
     }
 })
 
-// Fungsi submit utama
+
 const confirmSubmit = handleSubmit(() => {
     showConfirm.value = true
 })
@@ -73,81 +73,101 @@ async function submitData() {
 
     try {
         if (route.params.id) {
-
             await userStore.updateUser(Number(route.params.id), payload)
-            alert('User berhasil diperbarui!')
+            toast.success("User updated successfully!", {
+                timeout: 3000,
+            });
         } else {
-
             await userStore.addUser(payload)
-            alert('User berhasil ditambahkan!')
+            toast.success("User added successfully!", {
+                timeout: 3000,
+            });
         }
         router.push('/')
     } catch (err) {
         console.error(err)
-        alert('Terjadi kesalahan saat menyimpan data.')
+        toast.error("An error occurred while saving data.", {
+            timeout: 4000,
+        });
     } finally {
         loading.value = false
         showConfirm.value = false
     }
+
 }
 
 
 </script>
 
 <template>
-    <div class="p-6">
-        <h1 class="text-2xl font-bold mb-4">
-            {{ route.params.id ? 'Edit User' : 'Tambah User' }}
-        </h1>
+    <Hero />
+    <div class="container mx-auto px-5 lg:px-10 py-10">
+        <div class="flex justify-between mb-4">
+            <h1 class="text-2xl font-bold"> {{ route.params.id ? 'Edit User' : 'Add User' }}</h1>
+            <button @click="$router.push('/')" class="bg-blue-600 text-white px-4 py-2 rounded">Back</button>
+        </div>
+        <div>
 
-        <form @submit.prevent="confirmSubmit" class="space-y-4 max-w-md">
-            <div>
-                <label>Username</label>
-                <input v-model="username" class="border p-2 w-full" />
-                <span class="text-red-500 text-sm">{{ errors.username }}</span>
-            </div>
-            <div>
-                <label>Nama</label>
-                <input v-model="name" class="border p-2 w-full" />
-                <span class="text-red-500 text-sm">{{ errors.name }}</span>
-            </div>
-            <div>
-                <label>Telepon</label>
-                <input v-model="phone" class="border p-2 w-full" />
-                <span class="text-red-500 text-sm">{{ errors.phone }}</span>
-            </div>
-            <div>
-                <label>Email</label>
-                <input v-model="email" class="border p-2 w-full" />
-                <span class="text-red-500 text-sm">{{ errors.email }}</span>
-            </div>
-            <div>
-                <label>Kota</label>
-                <select v-model="city" class="border p-2 w-full">
-                    <option value="">Pilih Kota</option>
+
+            <form class="max-w-sm mx-auto" @submit.prevent="confirmSubmit">
+                <div class="mb-5">
+                    <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your
+                        Username</label>
+                    <input type="username" id="username" v-model="username"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="username" />
+                    <span class="text-red-500 text-sm">{{ errors.username }}</span>
+                </div>
+                <div class="mb-5">
+                    <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your
+                        Email</label>
+                    <input type="email" id="email" v-model="email"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="name@flowbite.com" />
+                    <span class="text-red-500 text-sm">{{ errors.email }}</span>
+                </div>
+                <div class="mb-5">
+                    <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your
+                        Name</label>
+                    <input type="name" id="name" v-model="name"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="name@flowbite.com" />
+                    <span class="text-red-500 text-sm">{{ errors.name }}</span>
+                </div>
+                <div class="mb-5">
+                    <label for="phone" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your
+                        Phone</label>
+                    <input type="phone" id="phone" v-model="phone"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Your phone number" />
+                    <span class="text-red-500 text-sm">{{ errors.phone }}</span>
+                </div>
+                <label for="countries" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Select your
+                    city</label>
+                <select id="countries" v-model="city"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                     <option v-for="k in cities" :key="k" :value="k">{{ k }}</option>
                 </select>
-                <span class="text-red-500 text-sm">{{ errors.city }}</span>
-            </div>
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">
-                Simpan
-            </button>
-        </form>
 
-        <!-- Modal Konfirmasi -->
-        <div v-if="showConfirm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div class="bg-white p-6 rounded shadow-lg w-96">
-                <h2 class="text-lg font-bold mb-4">Konfirmasi</h2>
-                <p>Apakah Anda yakin ingin menyimpan data ini?</p>
-                <div class="mt-4 flex justify-end gap-2">
-                    <button @click="showConfirm = false" class="px-4 py-2 bg-gray-300 rounded">
-                        Batal
-                    </button>
-                    <button @click="submitData" class="px-4 py-2 bg-blue-600 text-white rounded" :disabled="loading">
-                        {{ loading ? 'Menyimpan...' : 'Ya, Simpan' }}
-                    </button>
-                </div>
+                <button type="submit"
+                    class="text-white mt-5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+            </form>
+
+        </div>
+    </div>
+    <div v-if="showConfirm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white p-6 rounded shadow-lg w-96">
+            <h2 class="text-lg font-bold mb-4">Confirmation</h2>
+            <p>Are you sure you want to save this data?</p>
+            <div class="mt-4 flex justify-end gap-2">
+                <button @click="showConfirm = false" class="px-4 py-2 bg-gray-300 rounded">
+                    Cancel
+                </button>
+                <button @click="submitData" class="px-4 py-2 bg-blue-600 text-white rounded" :disabled="loading">
+                    {{ loading ? 'Saving...' : 'Yes, Save' }}
+                </button>
             </div>
         </div>
     </div>
+
 </template>

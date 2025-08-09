@@ -38,17 +38,13 @@ async function confirmDelete() {
 }
 </script>
 <template>
-
-
   <Hero />
-
   <div class="px-5 lg:px-10 pt-10 container mx-auto">
     <div class="flex justify-between mb-4">
       <h1 class="text-2xl font-bold">Explore Users</h1>
-      <button @click="router.push('/add')" class="bg-blue-600 text-white px-4 py-2 rounded">Tambah User</button>
+      <button @click="router.push('/add')" class="bg-blue-600 text-white px-4 py-2 rounded">Add User</button>
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-
       <div v-for="u in paginatedUsers" :key="u.id">
         <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
 
