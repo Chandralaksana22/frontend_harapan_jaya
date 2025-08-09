@@ -46,16 +46,16 @@ async function confirmDelete() {
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <div v-for="u in paginatedUsers" :key="u?.id">
-        <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
+        <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm">
 
-          <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ u?.name }}</h5>
+          <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">{{ u?.name }}</h5>
           <div class="mb-1 flex gap-2 items-center">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#000000" viewBox="0 0 256 256">
               <path
                 d="M222.37,158.46l-47.11-21.11-.13-.06a16,16,0,0,0-15.17,1.4,8.12,8.12,0,0,0-.75.56L134.87,160c-15.42-7.49-31.34-23.29-38.83-38.51l20.78-24.71c.2-.25.39-.5.57-.77a16,16,0,0,0,1.32-15.06l0-.12L97.54,33.64a16,16,0,0,0-16.62-9.52A56.26,56.26,0,0,0,32,80c0,79.4,64.6,144,144,144a56.26,56.26,0,0,0,55.88-48.92A16,16,0,0,0,222.37,158.46ZM176,208A128.14,128.14,0,0,1,48,80,40.2,40.2,0,0,1,82.87,40a.61.61,0,0,0,0,.12l21,47L83.2,111.86a6.13,6.13,0,0,0-.57.77,16,16,0,0,0-1,15.7c9.06,18.53,27.73,37.06,46.46,46.11a16,16,0,0,0,15.75-1.14,8.44,8.44,0,0,0,.74-.56L168.89,152l47,21.05h0s.08,0,.11,0A40.21,40.21,0,0,1,176,208Z">
               </path>
             </svg>
-            <p class="font-normal text-gray-700 dark:text-gray-400">{{ u?.phone }}</p>
+            <p class="font-normal text-gray-700 ">{{ u?.phone }}</p>
           </div>
           <div class="mb-1 flex gap-2 items-center">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#000000" viewBox="0 0 256 256">
@@ -63,7 +63,7 @@ async function confirmDelete() {
                 d="M224,48H32a8,8,0,0,0-8,8V192a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A8,8,0,0,0,224,48Zm-96,85.15L52.57,64H203.43ZM98.71,128,40,181.81V74.19Zm11.84,10.85,12,11.05a8,8,0,0,0,10.82,0l12-11.05,58,53.15H52.57ZM157.29,128,216,74.18V181.82Z">
               </path>
             </svg>
-            <p class="font-normal text-gray-700 dark:text-gray-400">{{ u?.email }}</p>
+            <p class="font-normal text-gray-700">{{ u?.email }}</p>
           </div>
           <div class="mb-1 flex gap-2 items-center">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#000000" viewBox="0 0 256 256">
@@ -71,11 +71,11 @@ async function confirmDelete() {
                 d="M112,80a16,16,0,1,1,16,16A16,16,0,0,1,112,80ZM64,80a64,64,0,0,1,128,0c0,59.95-57.58,93.54-60,94.95a8,8,0,0,1-7.94,0C121.58,173.54,64,140,64,80Zm16,0c0,42.2,35.84,70.21,48,78.5,12.15-8.28,48-36.3,48-78.5a48,48,0,0,0-96,0Zm122.77,67.63a8,8,0,0,0-5.54,15C213.74,168.74,224,176.92,224,184c0,13.36-36.52,32-96,32s-96-18.64-96-32c0-7.08,10.26-15.26,26.77-21.36a8,8,0,0,0-5.54-15C29.22,156.49,16,169.41,16,184c0,31.18,57.71,48,112,48s112-16.82,112-48C240,169.41,226.78,156.49,202.77,147.63Z">
               </path>
             </svg>
-            <p class="font-normal text-gray-700 dark:text-gray-400">{{ u?.address.city }}</p>
+            <p class="font-normal text-gray-700 ">{{ u?.address.city }}</p>
           </div>
           <div class="flex flex-wrap gap-2 mt-4">
             <button @click="router.push(`/detail/${u?.id}`)"
-              class="w-fit inline-flex gap-2 items-center px-3 py-2 text-sm font-medium text-center text-white focus:outline-none bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 rounded-lg me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+              class="w-fit inline-flex gap-2 items-center px-3 py-2 text-sm font-medium text-center text-white focus:outline-none bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 rounded-lg me-2 mb-2 ">
               View Detail
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#f7f7f7" viewBox="0 0 256 256">
                 <path
@@ -84,7 +84,7 @@ async function confirmDelete() {
               </svg>
             </button>
             <button @click="router.push(`/edit/${u?.id}`)"
-              class="w-fit inline-flex gap-2 items-center px-3 py-2 text-sm font-medium text-center text-white focus:outline-none bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 rounded-lg me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
+              class="w-fit inline-flex gap-2 items-center px-3 py-2 text-sm font-medium text-center text-white focus:outline-none bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 rounded-lg me-2 mb-2 ">
               Edit
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#f7f7f7" viewBox="0 0 256 256">
                 <path
@@ -93,7 +93,7 @@ async function confirmDelete() {
               </svg>
             </button>
             <button @click="openDeleteModal(u?.id)"
-              class="w-fit inline-flex gap-2 items-center px-3 py-2 text-sm font-medium text-center text-white focus:outline-none bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 rounded-lg me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+              class="w-fit inline-flex gap-2 items-center px-3 py-2 text-sm font-medium text-center text-white focus:outline-none bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 rounded-lg me-2 mb-2 ">
               Delete
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#f7f7f7" viewBox="0 0 256 256">
                 <path
@@ -116,9 +116,9 @@ async function confirmDelete() {
   <div v-if="showModal"
     class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-black bg-opacity-50">
     <div class="relative p-4 w-full max-w-md max-h-full">
-      <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+      <div class="relative bg-white rounded-lg shadow-sm ">
         <button @click="closeDeleteModal" type="button"
-          class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+          class="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center "
           aria-label="Close modal">
           <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 14 14"
             xmlns="http://www.w3.org/2000/svg">
@@ -126,19 +126,19 @@ async function confirmDelete() {
           </svg>
         </button>
         <div class="p-4 md:p-5 text-center">
-          <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" fill="none" stroke="currentColor"
-            stroke-width="2" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 " fill="none" stroke="currentColor" stroke-width="2"
+            viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round"
               d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
           </svg>
-          <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Are you sure you want to delete this
+          <h3 class="mb-5 text-lg font-normal text-gray-500 ">Are you sure you want to delete this
             user?</h3>
           <button @click="confirmDelete" type="button"
-            class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
+            class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
             Yes, I'm sure
           </button>
           <button @click="closeDeleteModal" type="button"
-            class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+            class="py-2.5 px-5 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 ">
             No, cancel
           </button>
         </div>
