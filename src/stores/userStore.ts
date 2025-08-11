@@ -7,7 +7,10 @@ export interface User {
   username: string;
   phone: string;
   email: string;
-  address: { city: string };
+  address: {
+    city: string;
+    street: string;
+  };
 }
 
 interface State {
@@ -40,7 +43,10 @@ export const useUserStore = defineStore("user", {
         username: user.username || "",
         phone: user.phone || "",
         email: user.email || "",
-        address: { city: user.address?.city || "" },
+        address: {
+          city: user.address?.city || "",
+          street: user.address?.street || "",
+        },
       };
 
       this.users.push(newUser);
