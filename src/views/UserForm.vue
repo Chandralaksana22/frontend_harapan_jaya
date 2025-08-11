@@ -7,6 +7,7 @@ import { onMounted, ref } from 'vue'
 import axios from 'axios'
 import Hero from '@/components/Hero.vue'
 import { useToast } from "vue-toastification";
+
 const toast = useToast();
 const userStore = useUserStore()
 const router = useRouter()
@@ -18,16 +19,27 @@ const loading = ref(false)
 const schema = yup.object({
     username: yup.string().required('Username wajib diisi'),
     name: yup.string().required('Nama wajib diisi'),
-    phone: yup.string().required('Telepon wajib diisi'),
+    phone: yup
+        .string()
+        .matches(/^\d+$/, 'Nomor telepon hanya boleh angka')
+        .max(13, 'Nomor telepon maksimal 13 angka')
+        .required('Telepon wajib diisi'),
     email: yup.string().email('Format email salah').required('Email wajib diisi'),
-    city: yup.string().required('Kota wajib dipilih')
+    city: yup.string().required('Kota wajib dipilih'),
+    address: yup.string().required('Alamat wajib diisi')
 })
-const { handleSubmit, errors, values } = useForm({ validationSchema: schema })
+
+const { handleSubmit, errors, values } = useForm({
+    validationSchema: schema,
+    validateOnMount: false
+})
+
 const { value: username } = useField<string>('username')
 const { value: name } = useField<string>('name')
 const { value: phone } = useField<string>('phone')
 const { value: email } = useField<string>('email')
 const { value: city } = useField<string>('city')
+const { value: address } = useField<string>('address')
 
 async function fetchCities() {
     try {
@@ -41,7 +53,6 @@ async function fetchCities() {
     }
 }
 
-
 onMounted(() => {
     fetchCities()
     if (route.params.id) {
@@ -51,11 +62,11 @@ onMounted(() => {
             name.value = u.name
             phone.value = u.phone
             email.value = u.email
-            city.value = u.address.city
+            city.value = u.address.city || ''
+            address.value = u.address.street || ''
         }
     }
 })
-
 
 const confirmSubmit = handleSubmit(() => {
     showConfirm.value = true
@@ -68,36 +79,31 @@ async function submitData() {
         name: values.name,
         phone: values.phone,
         email: values.email,
-        address: { city: values.city }
+        address: {
+            city: values.city,
+            street: values.address
+        }
     }
 
     try {
         if (route.params.id) {
             await userStore.updateUser(Number(route.params.id), payload)
-            toast.success("User updated successfully!", {
-                timeout: 3000,
-            });
+            toast.success("User updated successfully!", { timeout: 3000 })
         } else {
             await userStore.addUser(payload)
-            toast.success("User added successfully!", {
-                timeout: 3000,
-            });
+            toast.success("User added successfully!", { timeout: 3000 })
         }
         router.push('/')
     } catch (err) {
         console.error(err)
-        toast.error("An error occurred while saving data.", {
-            timeout: 4000,
-        });
+        toast.error("An error occurred while saving data.", { timeout: 4000 })
     } finally {
         loading.value = false
         showConfirm.value = false
     }
-
 }
-
-
 </script>
+
 
 <template>
     <Hero />
@@ -137,8 +143,9 @@ async function submitData() {
                 <div class="mb-5">
                     <label for="phone" class="block mb-2 text-sm font-medium text-gray-900 ">Your
                         Phone</label>
-                    <input type="phone" id="phone" v-model="phone"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+                    <input type="tel" id="phone" v-model="phone" maxlength="13"
+                        @input="phone = phone.replace(/[^0-9]/g, '')"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                         placeholder="Your phone number" />
                     <span class="text-red-500 text-sm">{{ errors?.phone }}</span>
                 </div>
@@ -148,7 +155,13 @@ async function submitData() {
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 ">
                     <option v-for="k in cities" :key="k" :value="k">{{ k }}</option>
                 </select>
-
+                <div class="mb-5">
+                    <label for="address" class="block mb-2 text-sm font-medium text-gray-900">Alamat</label>
+                    <textarea id="address" v-model="address"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                        placeholder="Masukkan alamat lengkap"></textarea>
+                    <span class="text-red-500 text-sm">{{ errors?.address }}</span>
+                </div>
                 <button type="submit"
                     class="text-white mt-5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Submit</button>
             </form>

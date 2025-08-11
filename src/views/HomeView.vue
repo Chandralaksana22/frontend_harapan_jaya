@@ -3,23 +3,65 @@ import { onMounted, ref, computed } from 'vue'
 import { useUserStore } from '../stores/userStore'
 import { useRouter } from 'vue-router'
 import Hero from '@/components/Hero.vue'
+
 const userStore = useUserStore()
 const router = useRouter()
 const currentPage = ref(1)
 const perPage = 3
 const idUserToDelete = ref<number | null>(null)
 const showModal = ref(false)
-
+const q = ref<string>('')
+const filteredUsers = ref<any[]>([])
+const sortOrder = ref<'asc' | 'desc'>('asc')
+const showAlert = ref(false)
 onMounted(() => {
-  userStore.fetchUsers()
+  userStore.fetchUsers().then(() => {
+    filteredUsers.value = [...userStore.users]
+    sortUsers()
+  })
 })
+
 
 const paginatedUsers = computed(() => {
   const start = (currentPage.value - 1) * perPage
-  return userStore.users.slice(start, start + perPage)
+  return filteredUsers.value.slice(start, start + perPage)
 })
-const totalPages = computed(() => Math.ceil(userStore.users.length / perPage))
 
+const totalPages = computed(() => Math.ceil(filteredUsers.value.length / perPage))
+
+function searchUsers() {
+  if (q.value.length < 3) {
+    showAlert.value = true
+    return
+  }
+  showAlert.value = false
+  filteredUsers.value = userStore.users.filter(u =>
+    u.name.toLowerCase().includes(q.value.toLowerCase()) ||
+    u.email.toLowerCase().includes(q.value.toLowerCase()) ||
+    u.phone.toLowerCase().includes(q.value.toLowerCase())
+  )
+  sortUsers()
+  currentPage.value = 1
+}
+
+function resetSearch() {
+  q.value = ''
+  showAlert.value = false
+  filteredUsers.value = userStore.users
+  sortUsers()
+  currentPage.value = 1
+}
+function sortUsers() {
+  filteredUsers.value.sort((a, b) => {
+    const nameA = a.name.toLowerCase()
+    const nameB = b.name.toLowerCase()
+    if (sortOrder.value === 'asc') {
+      return nameA.localeCompare(nameB)
+    } else {
+      return nameB.localeCompare(nameA)
+    }
+  })
+}
 function openDeleteModal(id: number) {
   idUserToDelete.value = id
   showModal.value = true
@@ -33,16 +75,34 @@ function closeDeleteModal() {
 async function confirmDelete() {
   if (idUserToDelete.value !== null) {
     await userStore.deleteUser(idUserToDelete.value)
+    filteredUsers.value = userStore.users
     closeDeleteModal()
   }
 }
+
 </script>
 <template>
   <Hero />
   <div class="px-5 lg:px-10 pt-10 container mx-auto">
     <div class="flex justify-between mb-4">
       <h1 class="text-2xl font-bold">Explore Users</h1>
-      <button @click="router.push('/add')" class="bg-blue-600 text-white px-4 py-2 rounded">Add User</button>
+      <div class="flex gap-2">
+        <button @click="router.push('/add')" class="bg-blue-600 text-white px-4 py-2 rounded">Add User</button>
+        <button @click="sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'; sortUsers()"
+          class="bg-gray-600 text-white px-4 py-2 rounded">
+          Sort: {{ sortOrder.toUpperCase() }}
+        </button>
+      </div>
+    </div>
+    <form class="flex gap-4 mb-5" @submit.prevent="searchUsers">
+      <input type="text" v-model="q" class="px-3 py-2 border border-gray-400 rounded-lg" placeholder="Cari user...">
+      <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Cari</button>
+      <button type="button" @click="resetSearch" class="bg-gray-500 text-white px-4 py-2 rounded">Reset</button>
+    </form>
+
+    <div v-if="showAlert" class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+      role="alert">
+      <span class="font-medium">Minimal 3 karakter!</span> Coba masukkan kata kunci yang lebih panjang.
     </div>
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
       <div v-for="u in paginatedUsers" :key="u?.id">
